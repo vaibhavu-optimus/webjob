@@ -4,7 +4,7 @@ param appServiceName string
 param webJobName string
 param webJobType string = 'continuous'
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' existing = {
+resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' existing = {
   id: appServicePlanId
 }
 
@@ -17,9 +17,9 @@ resource webJob 'Microsoft.Web/sites/slots/webjobs@2021-02-01' = {
   properties: {
     name: webJobName
     type: webJobType
-    scriptFile: ' '
+    scriptFile: './script.sh'
   }
 }
 
 output appServiceUrl string = appService.properties.defaultHostName
-output webJobName string = webJob.name
+output webJobNameOutput string = webJob.name
