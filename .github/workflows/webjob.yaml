@@ -43,8 +43,6 @@ jobs:
           export CLIENT_ID=$(jq -r .["client-id"] azure_credentials.json)
           export TENANT_ID=$(jq -r .["tenant-id"] azure_credentials.json)
           export CLIENT_SECRET=$(jq -r .["client-secret"] azure_credentials.json)
-          export RESOURCE_GROUP_NAME=$(jq -r .["resource-group-name"] azure_credentials.json)
-          export APP_SERVICE_NAME=$(jq -r .["app-service-name"] azure_credentials.json)
 
       - name: Azure Login
         uses: azure/login@v1
@@ -59,6 +57,8 @@ jobs:
 
       - name: Deploy WebJob to Azure App Service
         run: |
+          resource-group-name="RG-VaibhavUniyal-POC"
+          app-service-name="appdemowebjobtest0001"
           webjob_name="webjob-1"
           zip_file_path="./output/code.zip"
 
