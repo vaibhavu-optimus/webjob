@@ -63,7 +63,7 @@ jobs:
           webjob_name="webjob-1"
           zip_file_path="./output/code.zip"
 
-          az webapp webjob continuous add \
+          az webapp webjob continuous create \
             --resource-group $resource_group_name \
             --name $app_service_name \
             --webjob-name $webjob_name \
