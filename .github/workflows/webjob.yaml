@@ -16,7 +16,7 @@ jobs:
       - name: Create ZIP file
         run: |
           mkdir -p output
-          cp -r * ./output/
+          cp -r ./src ./output/
           zip -r output/code.zip ./output/
 
       - name: Upload artifact
