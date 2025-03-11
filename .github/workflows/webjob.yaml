@@ -67,4 +67,4 @@ jobs:
             --resource-group $resource_group_name \
             --name $app_service_name \
             --webjob-name $webjob_name \
-            --file $zip_file_path
+            --src $zip_file_path
