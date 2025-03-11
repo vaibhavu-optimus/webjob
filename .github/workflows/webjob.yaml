@@ -58,13 +58,13 @@ jobs:
 
       - name: Deploy WebJob to Azure App Service
         run: |
-          resource-group-name="RG-VaibhavUniyal-POC"
-          app-service-name="appdemowebjobtest0001"
+          resource_group_name="RG-VaibhavUniyal-POC"
+          app_service_name="appdemowebjobtest0001"
           webjob_name="webjob-1"
           zip_file_path="./output/code.zip"
 
           az webapp webjob continuous add \
-            --resource-group $resource-group-name \
-            --name $app-service-name \
+            --resource-group $resource_group_name \
+            --name $app_service_name \
             --webjob-name $webjob_name \
             --file $zip_file_path
