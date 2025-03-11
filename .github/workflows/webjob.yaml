@@ -20,7 +20,7 @@ jobs:
           zip -r output/code.zip ./output/
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4  # Updated to v4
+        uses: actions/upload-artifact@v4
         with:
           name: shell-script-artifact
           path: output/code.zip
@@ -28,22 +28,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    env:
+      resource_group_name: "RG-VaibhavUniyal-POC"
+      app_service_name: "appdemowebjobtest0001"
+      webjob_name: "webjob-1"
+      bicep_file_path: "./bicep/main.bicep"
+      app_service_plan_id: "/subscriptions/99cb61e0-6f5e-453f-9bf6-bc478df73d4b/resourceGroups/RG-VaibhavUniyal-POC/providers/Microsoft.Web/serverFarms/aspcdvaibhavuniyalpoc0024"
     steps:
-      - name: Install Azure CLI
-        run: |
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-          
-      - name: Install jq
-        run: |
-          sudo apt-get install jq
-
-      - name: Set up Azure credentials from secret
-        run: |
-          echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_credentials.json
-          export CLIENT_ID=$(jq -r .["clientId"] azure_credentials.json)
-          export SUBSCRIPTION_ID=$(jq -r .["subscriptionId"] azure_credentials.json)
-          export TENANT_ID=$(jq -r .["tenantId"] azure_credentials.json)
-          export CLIENT_SECRET=$(jq -r .["clientSecret"] azure_credentials.json)
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Azure CLI
+        uses: azure/cli@v1
+        with:
+          azure-cli-version: '2.28.0'
 
       - name: Azure Login
         uses: azure/login@v1
@@ -51,20 +49,16 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Download artifact
-        uses: actions/download-artifact@v4  # Updated to v4
+        uses: actions/download-artifact@v4
         with:
           name: shell-script-artifact
           path: ./output
 
       - name: Deploy WebJob to Azure App Service
         run: |
-          resource_group_name="RG-VaibhavUniyal-POC"
-          app_service_name="appdemowebjobtest0001"
-          webjob_name="webjob-1"
-          zip_file_path="./output/code.zip"
-
-          az webapp webjob continuous start \
+          az deployment group create \
             --resource-group $resource_group_name \
-            --name $app_service_name \
-            --webjob-name $webjob_name \
-            --src $zip_file_path
+            --template-file $bicep_file_path \
+            --parameters appServicePlanId="$app_service_plan_id" \
+                         appServiceName="$app_service_name" \
+                         webJobName="$webjob_name" \
