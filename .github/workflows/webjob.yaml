@@ -68,3 +68,6 @@ jobs:
             --name $app_service_name \
             --webjob-name $webjob_name \
             --src $zip_file_path
+
+
+            
