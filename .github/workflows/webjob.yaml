@@ -1,0 +1,71 @@
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create ZIP file
+        run: |
+          mkdir -p output
+          cp -r ./src ./output/
+          zip -r output/code.zip ./output/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: shell-script-artifact
+          path: output/code.zip
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Install jq
+        run: |
+          sudo apt-get install jq
+
+      - name: Set up Azure credentials from secret
+        run: |
+          echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_credentials.json
+          export CLIENT_ID=$(jq -r .["client-id"] azure_credentials.json)
+          export TENANT_ID=$(jq -r .["tenant-id"] azure_credentials.json)
+          export CLIENT_SECRET=$(jq -r .["client-secret"] azure_credentials.json)
+          export RESOURCE_GROUP_NAME=$(jq -r .["resource-group-name"] azure_credentials.json)
+          export APP_SERVICE_NAME=$(jq -r .["app-service-name"] azure_credentials.json)
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: shell-script-artifact
+          path: ./output
+
+      - name: Deploy WebJob to Azure App Service
+        run: |
+          webjob_name="webjob-1"
+          zip_file_path="./output/code.zip"
+
+          az webapp webjob continuous add \
+            --resource-group $RESOURCE_GROUP_NAME \
+            --name $APP_SERVICE_NAME \
+            --webjob-name $webjob_name \
+            --file $zip_file_path
