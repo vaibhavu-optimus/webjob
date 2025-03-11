@@ -47,17 +47,10 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: shell-script-artifact
-          path: ./output
-
       - name: Deploy WebJob to Azure App Service
         run: |
           az deployment group create \
             --resource-group $resource_group_name \
             --template-file $bicep_file_path \
-            --parameters appServicePlanId="$app_service_plan_id" \
-                         appServiceName="$app_service_name" \
-                         webJobName="$webjob_name" \
+            --parameters appServiceName="$app_service_name" \
+                         webJobName="$webjob_name"
