@@ -6,12 +6,12 @@ resource appService 'Microsoft.Web/sites@2021-02-01' existing = {
   name: appServiceName
 }
 
-resource webJob 'Microsoft.Web/sites/slots/webjobs@2021-02-01' = {
-  name: '${appServiceName}/default/${webJobName}'
+resource webJob 'Microsoft.Web/sites/webjobs@2021-02-01' = {
+  name: '${appServiceName}/${webJobName}'
   properties: {
     name: webJobName
     type: webJobType
-    scriptFile: 'dummy-script.sh'
+    scriptFile: ' '
   }
 }
 
