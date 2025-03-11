@@ -40,9 +40,9 @@ jobs:
       - name: Set up Azure credentials from secret
         run: |
           echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_credentials.json
-          export CLIENT_ID=$(jq -r .["clientId"] azure_credentials.json)
-          export TENANT_ID=$(jq -r .["tenantId"] azure_credentials.json)
-          export CLIENT_SECRET=$(jq -r .["clientSecret"] azure_credentials.json)
+          export CLIENT_ID=$(jq -r .["client-id"] azure_credentials.json)
+          export TENANT_ID=$(jq -r .["tenant-id"] azure_credentials.json)
+          export CLIENT_SECRET=$(jq -r .["client-secret"] azure_credentials.json)
           export RESOURCE_GROUP_NAME=$(jq -r .["resource-group-name"] azure_credentials.json)
           export APP_SERVICE_NAME=$(jq -r .["app-service-name"] azure_credentials.json)
 
