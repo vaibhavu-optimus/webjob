@@ -3,7 +3,6 @@ param appServicePlanId string
 param appServiceName string
 param webJobName string
 param webJobType string = 'continuous'
-param webJobFileUri string
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' existing = {
   id: appServicePlanId
@@ -18,7 +17,7 @@ resource webJob 'Microsoft.Web/sites/slots/webjobs@2021-02-01' = {
   properties: {
     name: webJobName
     type: webJobType
-    scriptFile: webJobFileUri
+    scriptFile: ' '
   }
 }
 
