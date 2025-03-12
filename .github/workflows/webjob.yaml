@@ -15,9 +15,9 @@ jobs:
 
       - name: Create ZIP file
         run: |
-          mkdir -p output/App_Data/jobs/continuous/WebJob1
-          cp -r ./src/* ./output/App_Data/jobs/continuous/WebJob1
-          zip -r ./webjob.zip ./output/*
+          mkdir -p ./App_Data/jobs/continuous/WebJob1
+          cp -r ./src/* ./App_Data/jobs/continuous/WebJob1
+          zip -r ./webjob.zip ./App_Data
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -34,10 +34,10 @@ jobs:
         with:
           name: webjob-artifact
 
-      - name: List files in webjob-artifact folder (debug)
+      - name: List files in root folder (debug)
         run: |
-          echo "Listing files in the webjob-artifact folder:"
-          ls -al ./webjob-artifact
+          echo "Listing files in the root folder:"
+          ls -al ./
 
       - name: Set up Azure CLI
         run: |
