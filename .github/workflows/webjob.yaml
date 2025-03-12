@@ -37,7 +37,7 @@ jobs:
       - name: List files in root folder (debug)
         run: |
           echo "Listing files in the root folder:"
-          ls -al ./
+          ls -la ./
 
       - name: Set up Azure CLI
         run: |
@@ -54,7 +54,7 @@ jobs:
           RESOURCE_GROUP="RG-VaibhavUniyal-POC"
           
           # Check if the artifact exists
-          ARTIFACT_PATH="./webjob-artifact/webjob.zip"
+          ARTIFACT_PATH="./webjob.zip"
 
           if [ -f "$ARTIFACT_PATH" ]; then
             echo "Artifact found, proceeding with deployment"
