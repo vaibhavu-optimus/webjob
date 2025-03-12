@@ -45,7 +45,7 @@ jobs:
 
       - name: Deploy WebJob to Azure Web App
         run: |
-          WEBAPP_NAME="appdemowebjobtest0001"
+          WEBAPP_NAME="appdemowebjobstest001"
           RESOURCE_GROUP="RG-VaibhavUniyal-POC"
           
           ARTIFACT_PATH="./webjob-artifact/webjob.zip"
