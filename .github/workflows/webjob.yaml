@@ -16,14 +16,14 @@ jobs:
       - name: Create ZIP file
         run: |
           mkdir -p output/App_Data/jobs/continuous/WebJob1
-          cp -r ./src ./output/App_Data/jobs/continuous/WebJob1
-          zip -r output/webjob.zip ./output/
+          cp -r ./src/* ./output/App_Data/jobs/continuous/WebJob1
+          zip -r ./webjob.zip ./output/*
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: webjob-artifact
-          path: output/webjob.zip
+          path: ./webjob.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -33,7 +33,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: webjob-artifact
-        
+
+      - name: List files in webjob-artifact folder (debug)
+        run: |
+          echo "Listing files in the webjob-artifact folder:"
+          ls -al ./webjob-artifact
+
       - name: Set up Azure CLI
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
@@ -48,6 +53,13 @@ jobs:
           WEBAPP_NAME="appdemowebjobstest001"
           RESOURCE_GROUP="RG-VaibhavUniyal-POC"
           
+          # Check if the artifact exists
           ARTIFACT_PATH="./webjob-artifact/webjob.zip"
 
-          az webapp deploy --name $WEBAPP_NAME --resource-group $RESOURCE_GROUP --src-path $ARTIFACT_PATH --type zip
+          if [ -f "$ARTIFACT_PATH" ]; then
+            echo "Artifact found, proceeding with deployment"
+            az webapp deploy --name $WEBAPP_NAME --resource-group $RESOURCE_GROUP --src-path $ARTIFACT_PATH --type zip
+          else
+            echo "Artifact not found at $ARTIFACT_PATH. Please check the file path."
+            exit 1
+          fi
